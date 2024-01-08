@@ -18,6 +18,7 @@ struct ContentView: View {
     )
 
     @State private var locations = [Location]()
+    @State private var selectedPlace: Location?
 
     var body: some View {
         MapReader { proxy in
@@ -30,6 +31,9 @@ struct ContentView: View {
                             .frame(width: 44, height: 44)
                             .background(.white)
                             .clipShape(.circle)
+                            .onLongPressGesture {
+                                selectedPlace = location
+                            }
                     }
                 }
             }
@@ -37,6 +41,13 @@ struct ContentView: View {
                 if let coordinate = proxy.convert(position, from: .local) {
                     let newLocation = Location(id: UUID(), name: "New location", description: "", latitude: coordinate.latitude, longitude: coordinate.longitude)
                     locations.append(newLocation)
+                }
+            }
+            .sheet(item: $selectedPlace) { place in
+                EditView(location: place) { newLocation in
+                    if let index = locations.firstIndex(of: place) {
+                        locations[index] = newLocation
+                    }
                 }
             }
         }
