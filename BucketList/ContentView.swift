@@ -43,19 +43,19 @@ struct ContentView: View {
                         viewModel.addLocation(at: coordinate)
                     }
                 }
+                .safeAreaInset(edge: .bottom, alignment: .trailing) {
+                    Picker("Select a map style", selection: $viewModel.mapStyle) {
+                        Text("Default").tag(0)
+                        Text("Hybrid").tag(1)
+                        Text("Satellite").tag(2)
+                    }
+                    .pickerStyle(.segmented)
+                }
                 .sheet(item: $viewModel.selectedPlace) { place in
                     EditView(location: place) {
                         viewModel.update(location: $0)
                     }
                 }
-            }
-            .safeAreaInset(edge: .bottom, alignment: .trailing) {
-                Picker("Select a map style", selection: $viewModel.mapStyle) {
-                    Text("Default").tag(0)
-                    Text("Hybrid").tag(1)
-                    Text("Satellite").tag(2)
-                }
-                .pickerStyle(.segmented)
             }
         } else {
             Button("Unlock Places", action: viewModel.authenticate)
@@ -63,6 +63,9 @@ struct ContentView: View {
                 .background(.blue)
                 .foregroundStyle(.white)
                 .clipShape(.capsule)
+                .alert(isPresented: $viewModel.showAlert) {
+                    Alert(title: Text(viewModel.alertTitle), message: Text(viewModel.alertMessage))
+                }
         }
     }
 }

@@ -18,6 +18,9 @@ extension ContentView {
         var selectedPlace: Location?
         var isUnlocked = false
         var mapStyle: Int = 0
+        var showAlert = false
+        var alertTitle = ""
+        var alertMessage = ""
 
         var selectedMapStyle: MapStyle {
             switch mapStyle {
@@ -70,15 +73,21 @@ extension ContentView {
             if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
                 let reason = "Please authenticate yourself to unlock your places."
 
-                context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authenticateError in
+                context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { [weak self] success, authenticateError in
+                    guard let self = self else { return }
+
                     if success {
                         self.isUnlocked = true
                     } else {
-                        // error
+                        self.alertTitle = "Unable to authenticate"
+                        self.alertMessage = "You biometrics don't match. Please try again later."
+                        self.showAlert = true
                     }
                 }
             } else {
-                // no biometrics
+                self.alertTitle = "No biometrics found"
+                self.alertMessage = "Please make sure to enable biometrics."
+                self.showAlert = true
             }
         }
     }
