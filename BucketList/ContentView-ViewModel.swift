@@ -9,6 +9,7 @@ import CoreLocation
 import Foundation
 import LocalAuthentication
 import MapKit
+import SwiftUI
 
 extension ContentView {
     @Observable
@@ -16,6 +17,16 @@ extension ContentView {
         private(set) var locations: [Location]
         var selectedPlace: Location?
         var isUnlocked = false
+        var mapStyle: Int = 0
+
+        var selectedMapStyle: MapStyle {
+            switch mapStyle {
+            case 0: .standard
+            case 1: .hybrid
+            case 2: .imagery
+            default: .standard
+            }
+        }
 
         let savePath = URL.documentsDirectory.appending(path: "SavedPlaces")
 

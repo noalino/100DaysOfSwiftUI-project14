@@ -37,6 +37,7 @@ struct ContentView: View {
                         }
                     }
                 }
+                .mapStyle(viewModel.selectedMapStyle)
                 .onTapGesture { position in
                     if let coordinate = proxy.convert(position, from: .local) {
                         viewModel.addLocation(at: coordinate)
@@ -47,6 +48,14 @@ struct ContentView: View {
                         viewModel.update(location: $0)
                     }
                 }
+            }
+            .safeAreaInset(edge: .bottom, alignment: .trailing) {
+                Picker("Select a map style", selection: $viewModel.mapStyle) {
+                    Text("Default").tag(0)
+                    Text("Hybrid").tag(1)
+                    Text("Satellite").tag(2)
+                }
+                .pickerStyle(.segmented)
             }
         } else {
             Button("Unlock Places", action: viewModel.authenticate)
