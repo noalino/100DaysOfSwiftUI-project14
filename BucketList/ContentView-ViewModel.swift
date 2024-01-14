@@ -6,7 +6,6 @@
 //
 
 import CoreLocation
-import Foundation
 import LocalAuthentication
 import MapKit
 import SwiftUI
